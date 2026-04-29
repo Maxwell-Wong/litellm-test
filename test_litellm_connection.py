@@ -6,7 +6,7 @@ from openai import OpenAI
 
 # LiteLLM Configuration
 API_KEY = "sk-Ao2H9iNgloLDgHEKaXQG5w"
-BASE_URL = "http://litellm-route-ai-tools.apps.dcloud.bocmacau.com/vl"
+BASE_URL = "http://litellm-route-ai-tools.apps.dcloud.bocmacau.com/v1"
 MODEL = "Qwen3.6-35B-A3B"
 
 def test_connection():
