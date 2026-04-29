@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """LiteLLM Connection Test - Simple connectivity test script"""
 
+import sys
 from openai import OpenAI
 
 # LiteLLM Configuration
@@ -76,4 +77,4 @@ def test_connection():
 
 if __name__ == "__main__":
     success = test_connection()
-    exit(0 if success else 1)
+    sys.exit(0 if success else 1)
