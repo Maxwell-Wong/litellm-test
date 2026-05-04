@@ -11,12 +11,18 @@ def load_config():
     """Load configuration from config.ini file"""
     config = configparser.ConfigParser()
 
-    # Get the directory where this script is located
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    config_path = os.path.join(script_dir, 'config.ini')
+    # Determine the base directory (works for both script and exe)
+    if getattr(sys, 'frozen', False):
+        # If running as compiled exe, use the exe's directory
+        base_dir = os.path.dirname(sys.executable)
+    else:
+        # If running as script, use the script's directory
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+
+    config_path = os.path.join(base_dir, 'config.ini')
 
     if not os.path.exists(config_path):
-        raise FileNotFoundError(f"Configuration file not found: {config_path}")
+        raise FileNotFoundError(f"Configuration file not found: {config_path}\nExpected location: {base_dir}")
 
     config.read(config_path)
 
@@ -43,7 +49,18 @@ def test_connection():
         BASE_URL = config['BASE_URL']
         MODEL = config['MODEL']
     except (FileNotFoundError, ValueError) as e:
-        print(f"❌ Configuration error: {e}")
+        print("=" * 60)
+        print("❌ Configuration Error")
+        print("=" * 60)
+        print(f"\n{e}\n")
+        print("To fix this issue:")
+        print("  1. Copy 'config.ini.example' to 'config.ini'")
+        print("  2. Place 'config.ini' in the same directory as this program")
+        print("  3. Edit 'config.ini' and fill in your API credentials")
+        print("\nCurrent working directory:", os.getcwd())
+        if getattr(sys, 'frozen', False):
+            print("Program location:", os.path.dirname(sys.executable))
+        print("=" * 60)
         return False
 
     print("=" * 60)

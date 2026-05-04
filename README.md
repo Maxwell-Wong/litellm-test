@@ -1,6 +1,6 @@
 # LiteLLM Connection Test Tool
 
-A simple tool to test connectivity to LiteLLM service.
+A simple tool to test connectivity to LiteLLM service with configuration file support.
 
 ## Features
 
@@ -8,15 +8,36 @@ A simple tool to test connectivity to LiteLLM service.
 - ✅ Send test requests to AI models
 - ✅ Display AI responses
 - ✅ Show token usage statistics
-- ✅ Cross-platform support (Windows, macOS)
+- ✅ Cross-platform support (Windows, macOS, Linux)
+- ✅ Configuration file support for easy setup
+- ✅ Works as both Python script and standalone executable
 
 ## Configuration
 
-The tool is pre-configured with the following settings:
+### Setting up config.ini
 
-- **API URL**: `http://litellm-route-ai-tools.apps.dcloud.bocmacau.com/vl`
-- **Model**: `Qwen3.6-35B-A3B`
-- **API Key**: `sk-Ao2H9iNgloLDgHEKaXQG5w`
+The tool now uses a configuration file for easy setup. Follow these steps:
+
+1. **Copy the example configuration file:**
+```bash
+cp config.ini.example config.ini
+```
+
+2. **Edit `config.ini` with your credentials:**
+
+```ini
+[litellm]
+# LiteLLM API Configuration
+API_KEY = your-api-key-here
+BASE_URL = http://your-litellm-server-url/v1
+MODEL = your-model-name
+```
+
+3. **Place `config.ini` in the same directory as:**
+   - The Python script (if running as script)
+   - The exe file (if running as standalone executable)
+
+**⚠️ Important**: `config.ini` is in `.gitignore` and will NOT be uploaded to GitHub to protect your API keys.
 
 ## Usage
 
@@ -38,7 +59,7 @@ Download the executable from [GitHub Actions Artifacts](../../actions)
 litellm-test.exe
 ```
 
-**macOS:**
+**macOS/Linux:**
 ```bash
 chmod +x litellm-test
 ./litellm-test
@@ -99,16 +120,31 @@ pyinstaller --onefile --name litellm-test test_litellm_connection.py
 
 ## Troubleshooting
 
+### "Configuration file not found" Error
+
+**Problem**: The tool cannot find `config.ini`
+
+**Solutions**:
+1. ✅ Copy `config.ini.example` to `config.ini`
+2. ✅ Place `config.ini` in the same folder as the program
+3. ✅ Ensure the file is named exactly `config.ini` (not `config.ini.txt`)
+
+**Windows Users**: Make sure file extensions are visible in Windows Explorer to avoid naming issues like `config.ini.txt`. To show file extensions:
+- Open File Explorer
+- View → Show → File name extensions
+
 ### Connection Failed
 
-- Check if the API URL is correct
+- Check if the API URL in `config.ini` is correct
 - Verify network connectivity to the LiteLLM service
-- Ensure the API key is valid
+- Ensure the API key in `config.ini` is valid
+- Check if the LiteLLM service is running
 
 ### Model Not Found
 
-- Confirm the model name is correct
+- Confirm the model name in `config.ini` is correct
 - Check if the model is available in your LiteLLM deployment
+- Verify the model name spelling (case-sensitive)
 
 ### Permission Denied (macOS/Linux)
 
