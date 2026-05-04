@@ -2,15 +2,50 @@
 """LiteLLM Connection Test - Simple connectivity test script"""
 
 import sys
+import configparser
+import os
 from openai import OpenAI
 
-# LiteLLM Configuration
-API_KEY = "sk-Ao2H9iNgloLDgHEKaXQG5w"
-BASE_URL = "http://litellm-route-ai-tools.apps.dcloud.bocmacau.com/v1"
-MODEL = "Qwen3.6-35B-A3B"
+
+def load_config():
+    """Load configuration from config.ini file"""
+    config = configparser.ConfigParser()
+
+    # Get the directory where this script is located
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    config_path = os.path.join(script_dir, 'config.ini')
+
+    if not os.path.exists(config_path):
+        raise FileNotFoundError(f"Configuration file not found: {config_path}")
+
+    config.read(config_path)
+
+    if 'litellm' not in config:
+        raise ValueError("Missing [litellm] section in config.ini")
+
+    required_keys = ['API_KEY', 'BASE_URL', 'MODEL']
+    for key in required_keys:
+        if key not in config['litellm']:
+            raise ValueError(f"Missing required configuration key: {key}")
+
+    return {
+        'API_KEY': config['litellm']['API_KEY'],
+        'BASE_URL': config['litellm']['BASE_URL'],
+        'MODEL': config['litellm']['MODEL']
+    }
 
 def test_connection():
     """Test LiteLLM connection"""
+    # Load configuration
+    try:
+        config = load_config()
+        API_KEY = config['API_KEY']
+        BASE_URL = config['BASE_URL']
+        MODEL = config['MODEL']
+    except (FileNotFoundError, ValueError) as e:
+        print(f"❌ Configuration error: {e}")
+        return False
+
     print("=" * 60)
     print("LiteLLM Connection Test")
     print("=" * 60)

@@ -41,3 +41,11 @@ Thumbs.db
 .venv
 env/
 venv/
+
+# Configuration files with sensitive data
+config.ini
+
+# Dependencies
+*.whl
+*.zip
+dependencies/

@@ -1,0 +1,6 @@
+[litellm]
+# LiteLLM API Configuration
+# Copy this file to config.ini and fill in your actual values
+API_KEY = your-api-key-here
+BASE_URL = http://your-litellm-server-url/v1
+MODEL = your-model-name
