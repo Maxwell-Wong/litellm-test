@@ -40,6 +40,7 @@ def load_config():
         'MODEL': config['litellm']['MODEL']
     }
 
+
 def test_connection():
     """Test LiteLLM connection"""
     # Load configuration
@@ -93,22 +94,42 @@ def test_connection():
 
         print("Request successful ✓")
 
-        # Extract and print response
+        # Print raw full response for debugging
+        print("\n==== Raw Model Full Response ====")
+        print(response)
+        print("=" * 50)
+
+        # Safely parse AI response, avoid None crash
+        ai_message = "[Empty response from model, connection established]"
+        finish_reason = "unknown"
+
+        if response.choices and len(response.choices) > 0:
+            choice = response.choices[0]
+            finish_reason = choice.finish_reason
+
+            if hasattr(choice, 'message') and choice.message and choice.message.content:
+                ai_message = choice.message.content.strip()
+
+        # Display AI response
         print("\n[3/3] AI Response:")
         print("-" * 60)
-        ai_message = response.choices[0].message.content
         print(ai_message)
         print("-" * 60)
+        print(f"Finish Reason: {finish_reason}")
 
-        # Display additional information
+        # Print statistics safely
         print(f"\n📊 Statistics:")
-        print(f"  - Model: {response.model}")
-        print(f"  - Prompt tokens: {response.usage.prompt_tokens}")
-        print(f"  - Completion tokens: {response.usage.completion_tokens}")
-        print(f"  - Total tokens: {response.usage.total_tokens}")
+        print(f"  - Model: {getattr(response, 'model', MODEL)}")
+
+        if hasattr(response, 'usage') and response.usage:
+            print(f"  - Prompt tokens: {response.usage.prompt_tokens}")
+            print(f"  - Completion tokens: {response.usage.completion_tokens}")
+            print(f"  - Total tokens: {response.usage.total_tokens}")
+        else:
+            print("  - Token usage: Not returned by model")
 
         print("\n" + "=" * 60)
-        print("✅ Connection test successful! LiteLLM is working properly")
+        print("✅ Connection test successful! LiteLLM service is working properly")
         print("=" * 60)
         return True
 
@@ -120,10 +141,10 @@ def test_connection():
         print("\nPossible reasons:")
         print("  1. Incorrect API URL")
         print("  2. Invalid API Key")
-        print("  3. Network connection issues")
-        print("  4. Incorrect model name")
-        print("  5. LiteLLM service is not running")
-        print("\nPlease check the configuration and try again")
+        print("  3. Internal network connection issues")
+        print("  4. Wrong model name configuration")
+        print("  5. LiteLLM backend service unavailable")
+        print("\nPlease check your config and network environment, then try again")
         return False
 
 
@@ -131,4 +152,3 @@ if __name__ == "__main__":
     success = test_connection()
     input("\nPress any key to exit...")
     sys.exit(0)
-    # sys.exit(0 if success else 1)
